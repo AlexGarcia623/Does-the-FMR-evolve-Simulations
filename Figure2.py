@@ -88,5 +88,5 @@ plt.ylim(ymin,1)
 
 plt.tight_layout()
 
-plt.savefig('Figures (pdfs)/'+"Gas_Comparison.pdf", bbox_inches='tight')
+plt.savefig('Figures (pdfs)/'+"Figure2.pdf", bbox_inches='tight')
 plt.show()

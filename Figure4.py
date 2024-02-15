@@ -61,4 +61,4 @@ for index, text in enumerate(leg.get_texts()):
 plt.tight_layout()
 plt.subplots_adjust(wspace=0.0)
 
-plt.savefig('./Figures (pdfs)/' + 'dZdSFR.pdf',bbox_inches='tight')
+plt.savefig('./Figures (pdfs)/' + 'Figure4.pdf',bbox_inches='tight')

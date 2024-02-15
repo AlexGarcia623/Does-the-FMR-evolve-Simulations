@@ -28,7 +28,10 @@ Contains pdf versions of all figures (exception of Figure 1)
 - Figure1.tex -- Generate Figure 1
 - Figure2.py -- Generate Figure 2
 - Figure3.py -- Generate Figure 3
+- Figure4.py -- Generate Figure 4
+- Figure5.pptx -- Powerpoint File used to generate Figure 5
 
+- dZdSFR.py -- Contains most of the logic for generating Figure 4
 - getAlpha.py -- Contains most of the logic for generating Figures 1, 2, A1, and B1
 - helpers.py -- Contains useful functions for getAlpha.py
 
