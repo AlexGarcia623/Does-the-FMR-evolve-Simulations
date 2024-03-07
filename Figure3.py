@@ -159,4 +159,4 @@ axs[0].set_xticks([0,2,4,6,8])
 plt.tight_layout()
 plt.subplots_adjust(wspace=0.0)
 
-plt.savefig('Figures (pdfs)/'+'all_scatters' + '.pdf', bbox_inches='tight' )
+plt.savefig('Figures (pdfs)/'+'Figure3' + '.pdf', bbox_inches='tight' )
