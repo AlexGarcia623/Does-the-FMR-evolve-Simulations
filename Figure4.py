@@ -23,6 +23,13 @@ mpl.rcParams['font.size']=18
 thin_low=8.0
 thin_high=8.5
 
+redshifts = np.arange(0,9)
+
+cmap = mpl.colors.LinearSegmentedColormap.from_list("", ["lightseagreen","gold","lightcoral"])
+
+newcolors = np.linspace(0, 1, len(redshifts))
+colors = [ cmap(x) for x in newcolors ]
+
 fig, axs = plt.subplots(1,3,figsize=(10,3.5),sharey=True)
 for sim_index, sim in enumerate(sims):
     ax = axs[sim_index]
@@ -35,10 +42,10 @@ for sim_index, sim in enumerate(sims):
         a,b = np.polyfit(worm_x,worm_y,1)
         xs = np.linspace(np.min(worm_x),np.max(worm_x),100)
         
-        color = 'C' + str(index)
+        color = colors[index]#'C' + str(index)
         
-        ax.plot(worm_x,worm_y,lw=1.5,label=r'$z=%s$' %index,color=color,alpha=0.5)
-        ax.plot(xs, a*xs+b,lw=2,linestyle='--',color=color)
+        ax.plot(worm_x,worm_y,lw=1.5,color=color,alpha=0.5)
+        ax.plot(xs, a*xs+b,lw=2,linestyle='--',color=color,label=r'$z=%s$' %index)
     
     ax.text(0.03, 0.05, whichSim2Tex[sim.upper()], transform=ax.transAxes)
 
@@ -52,12 +59,11 @@ axs[0].text(0.03,0.15,r'$10^{8.0} < M_* [M_\odot] < 10^{8.5}$', transform=axs[0]
 ymin,ymax=axs[0].get_ylim()
 # axs[0].set_ylim(-0.25,0.25)
 
-leg = axs[2].legend(frameon=False,bbox_to_anchor=(1,1),
-                    handletextpad=0.25, handlelength=0,
-                    labelspacing=0.05,fontsize=18)
-col = ['C' + str(i) for i in range(0,9)]
+leg = axs[2].legend(frameon=False,labelspacing=0.05,
+                    handletextpad=0, handlelength=0, markerscale=-1,bbox_to_anchor=(1,1))
+for i in range(len(leg.get_texts())): leg.legendHandles[i].set_visible(False)
 for index, text in enumerate(leg.get_texts()):
-    text.set_color(col[index])
+    text.set_color(colors[index])
 plt.tight_layout()
 plt.subplots_adjust(wspace=0.0)
 

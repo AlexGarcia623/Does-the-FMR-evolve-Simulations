@@ -84,7 +84,7 @@ plt.scatter(0.25,0.55 ,color='k',alpha=0.5,marker='s')
 plt.text(0.35,0.52,r'${\rm C20}$',fontsize=14,alpha=0.5)#,transform=plt.gca().transAxes)
 ymin, _ = plt.ylim()
 
-plt.ylim(ymin,1)
+plt.ylim(ymin,1.)
 
 plt.tight_layout()
 
