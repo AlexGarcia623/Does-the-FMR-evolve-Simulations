@@ -76,5 +76,5 @@ axs[0].set_ylim(-0.05,1.05)
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.0)
 
-plt.savefig('Figures (pdfs)/'+"alpha_comparison.pdf", bbox_inches='tight')
+plt.savefig('Figures (pdfs)/'+"FigureB1.pdf", bbox_inches='tight')
 plt.show()

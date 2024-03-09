@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
+import cmasher as cmr
 
 import illustris_python as il
 
@@ -25,10 +26,11 @@ thin_high=8.5
 
 redshifts = np.arange(0,9)
 
-cmap = mpl.colors.LinearSegmentedColormap.from_list("", ["lightseagreen","gold","lightcoral"])
+cmap = cmr.get_sub_cmap('cmr.guppy', 0.0, 1.0, N=len(redshifts))
+#mpl.colors.LinearSegmentedColormap.from_list("", ["lightseagreen","gold","lightcoral"])
 
 newcolors = np.linspace(0, 1, len(redshifts))
-colors = [ cmap(x) for x in newcolors ]
+colors = [ cmap(x) for x in newcolors[::-1] ]
 
 fig, axs = plt.subplots(1,3,figsize=(10,3.5),sharey=True)
 for sim_index, sim in enumerate(sims):

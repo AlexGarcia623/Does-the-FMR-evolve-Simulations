@@ -17,7 +17,7 @@ from scipy.stats import ks_2samp, iqr
 from helpers import sfmscut
 
 mpl.rcParams['text.usetex']        = True
-mpl.rcParams['text.latex.unicode'] = True
+# mpl.rcParams['text.latex.unicode'] = True
 mpl.rcParams['font.family']        = 'serif'
 mpl.rcParams['font.size']          = 20
 
@@ -120,7 +120,7 @@ mc     = 1.270E-02
 Zsun   = 1.27E-02
 
 def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
-              polyorder=1,THRESHOLD=-5.00E-01):
+              polyorder=1,THRESHOLD=-5.00E-01,verbose=False):
     
     STARS_OR_GAS = STARS_OR_GAS.upper()
     
@@ -178,14 +178,14 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
         R_gas     = R_gas    [nonans]
         R_star    = R_star   [nonans]
         
+        print(sim,'z=%s'%gbl_index,sum(nonans))
+        
         star_mass = np.log10(star_mass)
         Zstar     = np.log10(Zstar)
         
         alphas = np.linspace(0,1,100)        
         disps = np.ones(len(alphas)) * np.nan
-        
-        print(STARS_OR_GAS)
-        
+                
         if (STARS_OR_GAS == "GAS"):
             Z_use = Zgas
         elif (STARS_OR_GAS == "STARS"):
@@ -209,7 +209,8 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
         min_alpha = alphas[argmin]
         min_disp  = disps[argmin]
 
-        print('%s: %s, best alpha_%s = %s' %(sim, snap2z[snap], STARS_OR_GAS.lower(), min_alpha))
+        if verbose:
+            print('%s: %s, best alpha_%s = %s' %(sim, snap2z[snap], STARS_OR_GAS.lower(), min_alpha))
 
         width = min_disp * 1.05
 
