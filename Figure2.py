@@ -4,6 +4,9 @@ mpl.use('agg')
 import matplotlib.pyplot as plt
 
 from getAlpha import get_alpha
+from helpers import (
+    ttest, estimate_symmetric_error
+)
 
 sims = ['ORIGINAL','TNG','EAGLE']
 
@@ -14,11 +17,17 @@ m_gas_min  = 8.5
 
 polyorder=1
 
-EAGLE, EAGLE_lower, EAGLE_upper = get_alpha( 'EAGLE', m_star_min=m_star_min, m_star_max=m_star_max,
+EAGLE, EAGLE_lower, EAGLE_upper = get_alpha( 'EAGLE',
+                                             m_star_min=m_star_min,
+                                             m_star_max=m_star_max,
                                              polyorder=polyorder )
-TNG, TNG_lower, TNG_upper = get_alpha( 'TNG', m_star_min=m_star_min, m_star_max=m_star_max,
+TNG, TNG_lower, TNG_upper = get_alpha( 'TNG',
+                                       m_star_min=m_star_min,
+                                       m_star_max=m_star_max,
                                        polyorder=polyorder )
-ORIGINAL, ORIGINAL_lower, ORIGINAL_upper = get_alpha( 'ORIGINAL', m_star_min=m_star_min, m_star_max=m_star_max, 
+ORIGINAL, ORIGINAL_lower, ORIGINAL_upper = get_alpha( 'ORIGINAL',
+                                                      m_star_min=m_star_min,
+                                                      m_star_max=m_star_max, 
                                                       polyorder=polyorder )
 
 EAGLE_upper = EAGLE_upper - EAGLE
@@ -90,3 +99,20 @@ plt.tight_layout()
 
 plt.savefig('Figures (pdfs)/'+"Figure2.pdf", bbox_inches='tight')
 plt.show()
+
+### Do reference value t-test
+all_alpha = [EAGLE, TNG, ORIGINAL]
+all_lower = [EAGLE_lower, TNG_lower, ORIGINAL_lower]
+all_upper = [EAGLE_upper, TNG_upper, ORIGINAL_upper]
+    
+for index,alphas in enumerate(all_alpha):
+    lower = all_lower[index]
+    upper = all_upper[index]
+    
+    which_redshift_compare = 0
+    hypothesized_value = alphas[which_redshift_compare]
+    
+    est_error = estimate_symmetric_error( lower, upper )
+    
+    print(f'{sims[index]}, compared to z={which_redshift_compare} alpha value')
+    ttest(hypothesized_value, alphas, est_error)
