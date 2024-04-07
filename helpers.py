@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
+from scipy import stats
+
 
 def getMedians(x,y,width=0.1,step=0.05,return_masks=False,percentile=50,min_samp=10):
     start = np.min(x)
@@ -52,6 +54,29 @@ def fourth_order( x, a, b, c, d, e ):
 def third_order( x, a, b, c, d ):
     return a + b*x + c*x**2 + d*x**3
 
+def ttest(hypothesized_value,measurements,errors):
+    # Hypothesized value
+    
+    # Calculate weighted mean and standard error
+    weighted_mean = np.sum(measurements / errors**2) / np.sum(1 / errors**2)
+    weighted_std_error = np.sqrt(1 / np.sum(1 / errors**2))
+
+    # Calculate t-statistic
+    t_stat = (weighted_mean - hypothesized_value) / weighted_std_error
+
+    # Degrees of freedom
+    degrees_freedom = len(measurements) - 1
+
+    # Calculate p-value (two-tailed)
+    p_val = 2 * stats.t.sf(np.abs(t_stat), degrees_freedom)
+    
+    print("\tT-statistic:", t_stat)
+    print("\tP-value:", p_val)
+    
+def estimate_symmetric_error(lower, upper):
+    '''Errors are non symmetric, but not by much. I am just estimating them here'''
+    return (lower + upper) / 2
+
 def scatter_at_fixed_mu( mu, Z ):
     
     start = np.min(mu)
@@ -75,7 +100,7 @@ def scatter_at_fixed_mu( mu, Z ):
     return np.array(scatter)
 
 def sfmscut(m0, sfr0, THRESHOLD=-5.00E-01,
-            m_star_min=8.0, m_star_max=10.5):
+            m_star_min=8.0, m_star_max=12.0):
     nsubs = len(m0)
     idx0  = np.arange(0, nsubs)
     non0  = ((m0   > 0.000E+00) & 
@@ -119,7 +144,6 @@ def sfmscut(m0, sfr0, THRESHOLD=-5.00E-01,
     nonans = (~(np.isnan(mcs)) &
               ~(np.isnan(rdgs)) &
               ~(np.isnan(rdgs)))
-        
     parms, cov = curve_fit(line, mcs[nonans], rdgs[nonans], sigma = rdgstds[nonans])
     mmin    = mbrk
     mmax    = m_star_max

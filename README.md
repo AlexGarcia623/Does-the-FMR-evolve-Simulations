@@ -15,7 +15,7 @@ All credit for simulation data goes to the respective collaborations: see [Illus
 !!! Not required to run the scripts to generate plots !!!
 !!! Is required if you would like to significantly alter selection criteria !!!
 
-Contains scripts used to generate data products from "raw" simulation data 
+Contains scripts used to generate data products from raw simulation data 
 
 ### Figures (pdfs)
 
@@ -23,7 +23,9 @@ Contains pdf versions of all figures (exception of Figure 1)
 
 ### Rest of files
 
-- appendix_A.py -- Generate Figure A1
+- appendix_A1.py -- Generate Figure A1
+- appendix_A2.py -- Generate Figure A2 (not used in paper)
+- appendix_A3.py -- Generate Figure A3 (not used in paper)
 - appendix_B.py -- Generate Figure B1
 - Figure1.tex -- Generate Figure 1
 - Figure2.py -- Generate Figure 2

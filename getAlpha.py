@@ -141,10 +141,10 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
         SFR       = np.load( currentDir + 'SFR.npy' )
         R_gas     = np.load( currentDir + 'R_gas.npy' )
         R_star    = np.load( currentDir + 'R_star.npy' )
-
+        
         # Nominal threshold = -5.000E-01
         sfms_idx = sfmscut(star_mass, SFR, THRESHOLD=THRESHOLD,
-                           m_star_min=m_star_min, m_star_max=m_star_max)
+                           m_star_min=8.0, m_star_max=12.0)
 
         desired_mask = ((star_mass > 1.00E+01**(m_star_min)) &
                         (star_mass < 1.00E+01**(m_star_max)) &
@@ -177,9 +177,7 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
         Zgas      = Zgas     [nonans]
         R_gas     = R_gas    [nonans]
         R_star    = R_star   [nonans]
-        
-        print(sim,'z=%s'%gbl_index,sum(nonans))
-        
+                
         star_mass = np.log10(star_mass)
         Zstar     = np.log10(Zstar)
         
@@ -215,9 +213,11 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
         width = min_disp * 1.05
 
         within_uncertainty = alphas[ (disps < width) ]
-
-        min_uncertain = within_uncertainty[0]
-        max_uncertain = within_uncertainty[-1] 
+        
+        min_uncertain, max_uncertain = 0, 0
+        if (len(within_uncertainty) > 0):
+            min_uncertain = within_uncertainty[0]
+            max_uncertain = within_uncertainty[-1] 
         
         min_alphas[gbl_index] = min_alpha
         low_errbar[gbl_index] = min_uncertain

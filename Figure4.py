@@ -56,7 +56,8 @@ for sim_index, sim in enumerate(sims):
         
 axs[0].set_ylabel(r'$\Delta Z$')
 
-axs[0].text(0.03,0.15,r'$10^{8.0} < M_* [M_\odot] < 10^{8.5}$', transform=axs[0].transAxes, fontsize=16)
+axs[0].text(0.03,0.15,r'$10^{%.1f} < M_* [M_\odot] < 10^{%.1f}$' %(thin_low,thin_high),
+            transform=axs[0].transAxes, fontsize=16)
 
 ymin,ymax=axs[0].get_ylim()
 # axs[0].set_ylim(-0.25,0.25)
