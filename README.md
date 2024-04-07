@@ -1,4 +1,4 @@
-# Does the FMR evolve with redshift? A Perspective From Cosmological Simulations
+# Does the FMR evolve with redshift? I: The Correlation Between Offsets from the Mass-Metallicity Relation and Star Formation Rate
 
 This repo contains the analysis scripts, figures, and data products from the paper Garcia et al. (2024b)
 
