@@ -19,19 +19,18 @@ fig, axs = plt.subplots(3,1,figsize=(8,12),sharey=True,sharex=True)
 z = np.arange(0,9)
 ms = 10
 
-offset = [-0.075,-0.1,-0.05,0.0,0.05,0.1]
-m_gas_mins = [8.0,8.1,8.25,8.3,8.4,8.5]
+offset = [-0.1,0.0,0.1]
+m_gas_mins = [8.0,8.25,8.5]
 labels = []
 for m in m_gas_mins:
-    labels.append(r'$M_{\rm min,\;gas} = 10^{%.2f}$' %m)
-colors = ['C%s' %i for i in range(len(m_gas_mins))]
+    labels.append(r'$\log M_{\rm min,\;gas} = {%.2f} \log M_\odot$' %m)
+colors = [(np.random.random(), np.random.random(), np.random.random()) for _ in range(len(m_gas_mins))]
 markers = ['o','^','<','>','v','*']
-    
+
 for index, m_gas_min in enumerate(m_gas_mins):
     EAGLE, EAGLE_lower, EAGLE_upper = get_alpha( 'EAGLE', m_star_min=m_star_min, m_star_max=m_star_max,
                                                  m_gas_min=m_gas_min )
-    print('')
-    continue
+    
     TNG, TNG_lower, TNG_upper = get_alpha( 'TNG', m_star_min=m_star_min, m_star_max=m_star_max,
                                            m_gas_min=m_gas_min )
     ORIGINAL, ORIGINAL_lower, ORIGINAL_upper = get_alpha( 'ORIGINAL', m_star_min=m_star_min, m_star_max=m_star_max, 
@@ -79,5 +78,5 @@ axs[0].set_ylim(-0.05,1.05)
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.0)
 
-plt.savefig('Figures (pdfs)/'+"FigureC1.pdf", bbox_inches='tight')
+plt.savefig('Figures (pdfs)/'+"FigureA2.pdf", bbox_inches='tight')
 plt.show()
