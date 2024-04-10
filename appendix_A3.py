@@ -30,6 +30,19 @@ for index, Max in enumerate(m_star_maxs):
 colors = ['C%s' %i for i in range(len(m_star_mins))]
 markers = ['o','^','<','>','v','*','s']
 
+illustris_full_pop = [0.23,0.33,0.39,0.45,0.49,0.52,0.53,0.56,0.59]
+tng_full_pop = [0.31,0.61,0.60,0.65,0.68,0.70,0.70,0.70,0.70]
+eagle_full_pop = [0.74,0.73,0.65,0.59,0.53,0.46,0.44,0.40,0.31]
+
+zs = np.arange(0,9)
+
+axs[0].scatter(zs, illustris_full_pop, color='k', marker='x',
+               s=ms*10, label=r'${\rm Full~Population}$')
+axs[1].scatter(zs, tng_full_pop, color='k', marker='x',
+               s=ms*10, label=r'${\rm Full~Population}$')
+axs[2].scatter(zs, eagle_full_pop, color='k', marker='x',
+               s=ms*10, label=r'${\rm Full~Population}$')
+
 for index, m_star_max in enumerate(m_star_maxs):
     m_star_min = m_star_mins[index]
     print(f'min: {m_star_min:.1f}, max: {m_star_max:.1f}')
@@ -64,6 +77,8 @@ for index, m_star_max in enumerate(m_star_maxs):
                   linestyle='none', marker=markers[index],markersize=ms,capsize=5 )
     
 
+colors = ['k']
+colors += ['C%s' %i for i in range(len(m_star_mins))]
 handles, labels = axs[1].get_legend_handles_labels()
     
 leg  = axs[3].legend(handles, labels, frameon=True,
