@@ -1,18 +1,20 @@
+'''Module used for getting Illustris and TNG data
+
+'''
 import numpy as np
 import sys
 import h5py
-import illustris_python as il
+import illustris_python as il # https://github.com/illustristng/illustris_python
 from os import path, mkdir
 
 WHICH_SIM = "tng".upper()
-OVERWRITE = True
 SF_WEIGHT = True
 
 SAVE_DATA = True
 
 #########################################################################
 ################# YOU WILL PROBABLY HAVE TO CHANGE THIS #################
-savedir = '../blue_FMR/%s/data/' %WHICH_SIM
+savedir = '../Data/%s/' %WHICH_SIM
 #########################################################################
 
 if not (path.exists(savedir)):
@@ -56,11 +58,6 @@ elif (WHICH_SIM == "ORIGINAL-3"):
     
 elif (WHICH_SIM == "TNG50"):
     run     = 'L35n2160TNG'
-    ### Directories for snapshot 99 and 50 are different... for some reason
-    # base    = '/orange/paul.torrey/IllustrisTNG/Runs/' + run + '/'
-    # out_dir = base
-    # snaps   = [99]
-    ###
     base    = '/orange/paul.torrey/zhemler/IllustrisTNG/' + run + '/'
     out_dir = base + 'output/'
     snaps   = [50]
@@ -109,7 +106,8 @@ for snap in snaps:
     print(scf, z)
 
     print('Subhalos')
-    fields = ['SubhaloMassType','SubhaloSFR','SubhaloStarMetallicity','SubhaloGasMetallicity','SubhaloHalfmassRadType','SubhaloGasMetallicitySfr']
+    fields = ['SubhaloMassType','SubhaloSFR','SubhaloStarMetallicity',
+              'SubhaloGasMetallicity','SubhaloHalfmassRadType','SubhaloGasMetallicitySfr']
     sub_cat = il.groupcat.loadSubhalos(out_dir,snap,fields=fields)
 
     print('Halos')
@@ -118,9 +116,8 @@ for snap in snaps:
 
     subs = grp_cat['GroupFirstSub']
 
-    subs = subs[(subs != 4294967295)] # Illustris weirdness...?
+    subs = subs[(subs != 4294967295)] # Illustris weirdness
 
-    # print (sub_cat['SubhaloMassType']).shape
     gas_mass  = sub_cat['SubhaloMassType'][subs,0] * 1.00E+10 / h
     star_mass = sub_cat['SubhaloMassType'][subs,4] * 1.00E+10 / h
     SFR       = sub_cat['SubhaloSFR'][subs]

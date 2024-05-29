@@ -1,29 +1,34 @@
-import sys
-import os
-import h5py
+'''
+This file is used to create Figure 3 of "Does the fundamental 
+metallicity relation evolve with redshift? I: the correlation
+between offsets from the mass-metallicity relation and star 
+formation rate"
+#
+Paper: https://academic.oup.com/mnras/article/531/1/1398/7671150
+#
+Code written by: Alex Garcia, 2023-24
+'''
+### Standard Imports
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
-import illustris_python as il
-
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm, ListedColormap
-import matplotlib.gridspec as gridspec
-
-from scipy.optimize import curve_fit
-from scipy.interpolate import interp1d
-from scipy.stats import ks_2samp, iqr
-
-from getAlpha import get_alpha_scatter, whichSim2Tex
+### Imports From this library
+import sys, os
+sys.path.append(os.path.dirname(os.getcwd()))
+from does_the_fmr_evolve_simulations.getAlpha import (
+    get_alpha_scatter, whichSim2Tex
+)
 
 mpl.rcParams['font.size'] = 18
 
+### Fiducial Hyperparameters
 m_star_min = 8.0
 m_star_max = 12.0
 m_gas_min  = 8.5
+polyorder  = 1
 
-polyorder = 1
-
+### Make figure
 fig, axs = plt.subplots(1,3,figsize=(9,3.5),sharey=True,sharex=True)
 
 sims = ['original','tng','eagle']
@@ -31,18 +36,17 @@ col  = ['C1','C2','C0']
 mark = ['^','*','o']
 linestyles = ['solid','solid','solid']
 
-
-all_loc, all_glob, all_MZR = [],[],[]
+all_weak, all_strong, all_MZR = [],[],[]
 
 for index, sim in enumerate(sims):
     color = col[index]
     symb  = mark[index]
     sim   = sim.upper()
     
-    scatter_loc, scatter_glob, scatter_MZR = get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=8.5,
-                                                               STARS_OR_GAS='gas',polyorder=1)
-    all_loc.append( scatter_loc )
-    all_glob.append( scatter_glob )
+    scatter_weak, scatter_strong, scatter_MZR = get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=m_gas_min,
+                                                                  STARS_OR_GAS='gas',polyorder=1)
+    all_weak.append( scatter_weak )
+    all_strong.append( scatter_strong )
     all_MZR.append( scatter_MZR )
     
 axs[0].axhline(1, color='gray', linestyle=':', alpha=0.5)
@@ -53,13 +57,13 @@ for ax in axs:
 
 redshifts = np.arange(0,9)
 
-loc  = np.array( all_loc )
-glob = np.array( all_glob )
+weak  = np.array( all_weak )
+strong = np.array( all_strong )
 MZR  = np.array( all_MZR )
 
-ratios1 = loc  / MZR
-ratios2 = glob / MZR
-ratios3 = loc  / glob
+ratios1 = weak   / MZR
+ratios2 = strong / MZR
+ratios3 = weak   / strong
 
 illustris = ratios1[0,:]
 tng       = ratios1[1,:]

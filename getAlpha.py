@@ -1,22 +1,38 @@
-import sys
-import os
-import time
-import h5py
+'''
+This module sets matplotlib rcParams and defines several 
+functions useful for calculating alpha values
+#
+Functions:
+    - switch_sim(WHICH_SIM)
+        Get constants in order to switch which simulation to analyze
+        
+    - get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='stars',
+                polyorder=1,THRESHOLD=-5.00E-01)
+        Get the projection of minimum scatter
+
+    - get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
+                                 STARS_OR_GAS='gas',polyorder=1,
+                                 THRESHOLD=-5.00E-01,verbose=False)
+        Get alpha_min in different mass bins. Unused in the paper see Carnevale et al. In Prep
+        
+    - get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=8.5,
+                        STARS_OR_GAS='gas',polyorder=1)
+        Same as get_alpha(...) but returns scatter values
+#
+Code written by: Alex Garcia, 2023-24
+'''
+### Standard Imports
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
-
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm, ListedColormap
-import matplotlib.gridspec as gridspec
 
-from scipy.interpolate import interp1d
-from scipy.stats import ks_2samp, iqr
-
-from helpers import sfmscut
+### From this library
+import sys, os
+sys.path.append(os.path.dirname(os.getcwd()))
+from does_the_fmr_evolve_simulations.helpers import sfmscut
 
 mpl.rcParams['text.usetex']        = True
-# mpl.rcParams['text.latex.unicode'] = True
 mpl.rcParams['font.family']        = 'serif'
 mpl.rcParams['font.size']          = 20
 
@@ -40,8 +56,7 @@ mpl.rcParams['ytick.right'] = True
 
 
 #########################################################################
-################# YOU WILL PROBABLY HAVE TO CHANGE THIS #################
-BLUE = '../blue_FMR/'
+BLUE = './Data/'
 #########################################################################
 run, base, out_dir, snapshots = None, None, None, []
 snap2z = {}
@@ -53,6 +68,16 @@ whichSim2Tex = {
 }
 
 def switch_sim(WHICH_SIM):
+    '''Get constants in order to switch which simulation to analyze
+    
+    Inputs:
+    - WHICH_SIM: any of (eagle, original, TNG, TNG50-1, TNG50-2])
+    
+    Returns
+    - (list): snapshots
+    - (dict): snap2z
+    - (String): location in Data
+    '''
     BLUE_DIR = BLUE + WHICH_SIM + "/"
     if (WHICH_SIM.upper() == "TNG"):
         # TNG
@@ -93,7 +118,6 @@ def switch_sim(WHICH_SIM):
             32 :'z=10',
         }
     elif (WHICH_SIM.upper() == "EAGLE"):
-        EAGLE_DATA = BLUE_DIR + 'data/'
         snapshots = [28,19,15,12,10,8,6,5,4] # 3,2
         snap2z = {
             28:'z=0',
@@ -120,7 +144,23 @@ Zsun   = 1.27E-02
 
 def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
               polyorder=1,THRESHOLD=-5.00E-01,verbose=False):
+    '''Get the projection of minimum scatter
     
+    Inputs:
+    - sim (String): name of simulation (eagle, original, tng)
+    - m_star_min (float): minimum stellar mass 
+    - m_star_max (float): maximum stellar mass
+    - m_gas_min (float): minimum gas mass
+    - STARS_OR_GAS (String): Get stellar or gas-phase metallicity
+    - polyorder (int): Order of fitting polynomial
+    - THRESHOLD (float): threshold for sSFMS (see appendix of paper)
+    - verbose (bool): Flag for printing output
+    
+    Returns:
+    - (ndarray): all alpha values for the simulation
+    - (ndarray): all lower estimates for alpha
+    - (ndarray): all upper estimates for alpha
+    '''
     STARS_OR_GAS = STARS_OR_GAS.upper()
     
     snapshots, snap2z, BLUE_DIR = switch_sim(sim)
@@ -131,7 +171,7 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
     
     for gbl_index, snap in enumerate(snapshots):
 
-        currentDir = BLUE_DIR + 'data/' + 'snap%s/' %snap
+        currentDir = BLUE_DIR + 'snap%s/' %snap
 
         Zgas      = np.load( currentDir + 'Zgas.npy' )
         Zstar     = np.load( currentDir + 'Zstar.npy' ) 
@@ -226,7 +266,23 @@ def get_alpha(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
 def get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
                                STARS_OR_GAS='gas',polyorder=1,
                                THRESHOLD=-5.00E-01,verbose=False):
+    '''Same as "get_alpha" but for individual mass bin
     
+    Inputs:
+    - sim (String): name of simulation (eagle, original, tng)
+    - m_star_min (float): minimum stellar mass 
+    - m_star_max (float): maximum stellar mass
+    - m_gas_min (float): minimum gas mass
+    - STARS_OR_GAS (String): Get stellar or gas-phase metallicity
+    - polyorder (int): Order of fitting polynomial
+    - THRESHOLD (float): threshold for sSFMS (see appendix of paper)
+    - verbose (bool): Flag for printing output
+    
+    Returns:
+    - (ndarray): all alpha values for the simulation
+    - (ndarray): all lower estimates for alpha
+    - (ndarray): all upper estimates for alpha
+    '''
     STARS_OR_GAS = STARS_OR_GAS.upper()
     
     snapshots, snap2z, BLUE_DIR = switch_sim(sim)
@@ -237,7 +293,7 @@ def get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
     
     for gbl_index, snap in enumerate(snapshots):
 
-        currentDir = BLUE_DIR + 'data/' + 'snap%s/' %snap
+        currentDir = BLUE_DIR + 'snap%s/' %snap
 
         Zgas      = np.load( currentDir + 'Zgas.npy' )
         Zstar     = np.load( currentDir + 'Zstar.npy' ) 
@@ -247,7 +303,7 @@ def get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
         R_gas     = np.load( currentDir + 'R_gas.npy' )
         R_star    = np.load( currentDir + 'R_star.npy' )
         
-        # Nominal threshold = -5.000E-01
+        ## Make sure there are enough galaxies in each mass bin
         try:
             sfms_idx = sfmscut(star_mass, SFR, THRESHOLD=THRESHOLD,
                                m_star_min=8.0, m_star_max=12.0)
@@ -258,7 +314,7 @@ def get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
                             (sfms_idx))
             
             if sum(desired_mask) <= 20:
-                assert(1==0)
+                assert(1==0) ## create exception
 
             gas_mass  = gas_mass [desired_mask]
             star_mass = star_mass[desired_mask]
@@ -341,20 +397,35 @@ def get_alpha_handle_mass_bins(sim, m_star_min, m_star_max, m_gas_min=8.5,
             
     return min_alphas, low_errbar, hi_errbar
     
-def get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='gas',
-                      polyorder=1):
+def get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=8.5, 
+                      STARS_OR_GAS='gas',polyorder=1):
+    '''Same as "get_alpha" but outputs scatter values
+    
+    Inputs:
+    - sim (String): name of simulation (eagle, original, tng)
+    - m_star_min (float): minimum stellar mass 
+    - m_star_max (float): maximum stellar mass
+    - m_gas_min (float): minimum gas mass
+    - STARS_OR_GAS (String): Get stellar or gas-phase metallicity
+    - polyorder (int): Order of fitting polynomial
+    
+    Returns:
+    - (ndarray): weak FMR scatter
+    - (ndarray): strong FMR scatter
+    - (ndarray): MZR scatter
+    '''
     STARS_OR_GAS = STARS_OR_GAS.upper()
     
     snapshots, snap2z, BLUE_DIR = switch_sim(sim)
     
-    scatter_global = np.zeros( len(snapshots) )
-    scatter_local  = np.zeros( len(snapshots) )
+    scatter_strong = np.zeros( len(snapshots) )
+    scatter_weak   = np.zeros( len(snapshots) )
     scatter_MZR    = np.zeros( len(snapshots) )
     
     z0_alpha = None
     
     for snap_index, snap in enumerate(snapshots):        
-        currentDir = BLUE_DIR + 'data/' + 'snap%s/' %snap
+        currentDir = BLUE_DIR + 'snap%s/' %snap
 
         Zgas      = np.load( currentDir + 'Zgas.npy' )
         Zstar     = np.load( currentDir + 'Zstar.npy' ) 
@@ -425,13 +496,11 @@ def get_alpha_scatter(sim, m_star_min, m_star_max, m_gas_min=8.5, STARS_OR_GAS='
             # If z=0, save alpha for comparisons
             z0_alpha = alphas[ np.argmin(disp) ]
         
-        scatter_local[snap_index]  = np.min(disp)
-        ## [Get the location of the z0 alpha]
-        scatter_global[snap_index] = disp[np.argmin(np.abs(alphas - z0_alpha ))]
-        ## MZR Scatter = alpha=0.0
+        scatter_weak[snap_index]   = np.min(disp)
+        scatter_strong[snap_index] = disp[np.argmin(np.abs(alphas - z0_alpha))]
         scatter_MZR[snap_index]    = disp[ 0 ]
     
-    return scatter_local, scatter_global, scatter_MZR   
+    return scatter_weak, scatter_strong, scatter_MZR   
     
 if __name__ == "__main__":
     print('Hello World')

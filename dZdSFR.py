@@ -1,32 +1,30 @@
+'''
+This module sets defines a useful function for
+the creation of Figure 4
+#
+Functions:
+    - thin_mass_bin(sim, ax, m_star_min=8.0, m_star_max=12.0, m_gas_min=8.5,
+                  STARS_OR_GAS='gas', polyorder=1, THRESHOLD=-5.00E-01,
+                  thin_low=8.0,thin_high=12.0)
+        Get the (offset from MZR) metallicity and SFRs in a thin mass bin
+#
+Code written by: Alex Garcia, 2023-24
+'''
+### Standard Imports
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
-
-from matplotlib.colors import LogNorm
-
-from getAlpha import switch_sim, BLUE, whichSim2Tex
-from helpers import getMedians, sfmscut
-
-fs_og = 20
-mpl.rcParams['font.size'] = fs_og
-mpl.rcParams['axes.linewidth'] = 2.25
-mpl.rcParams['xtick.direction'] = 'in'
-mpl.rcParams['ytick.direction'] = 'in'
-mpl.rcParams['xtick.minor.visible'] = 'true'
-mpl.rcParams['ytick.minor.visible'] = 'true'
-mpl.rcParams['xtick.major.width'] = 1.5
-mpl.rcParams['ytick.major.width'] = 1.5
-mpl.rcParams['xtick.minor.width'] = 1.0
-mpl.rcParams['ytick.minor.width'] = 1.0
-mpl.rcParams['xtick.major.size'] = 7.5
-mpl.rcParams['ytick.major.size'] = 7.5
-mpl.rcParams['xtick.minor.size'] = 3.5
-mpl.rcParams['ytick.minor.size'] = 3.5
-mpl.rcParams['xtick.top'] = True
-mpl.rcParams['ytick.right'] = True
-
+### Imports From this library
+import sys, os
+sys.path.append(os.path.dirname(os.getcwd()))
+from does_the_fmr_evolve_simulations.getAlpha import (
+    switch_sim, BLUE, whichSim2Tex
+)
+from does_the_fmr_evolve_simulations.helpers import (
+    getMedians, sfmscut
+)
 
 run, base, out_dir, snapshots = None, None, None, []
 snap2z = {}
@@ -42,7 +40,24 @@ Zsun   = 1.27E-02
 def thin_mass_bin(sim, ax, m_star_min=8.0, m_star_max=12.0, m_gas_min=8.5,
                   STARS_OR_GAS='gas', polyorder=1, THRESHOLD=-5.00E-01,
                   thin_low=8.0,thin_high=12.0):
-    
+    '''Get the (offset from MZR) metallicity and SFRs in a thin mass bin
+
+    Inputs:
+    - sim (String): name of simulation
+    - ax (plt axis): axis to plot on
+    - m_star_min (float): minimum stellar mass 
+    - m_star_max (float): maximum stellar mass
+    - m_gas_min (float): minimum gas mass
+    - STARS_OR_GAS (String): Get stellar or gas-phase metallicity
+    - polyorder (int): Order of fitting polynomial
+    - THRESHOLD (float): threshold for sSFMS (see appendix of paper)
+    - thin_low (float): minimum of mass bin
+    - thin_high (float): maximum of mass bin
+
+    Returns:
+    - (ndarray): median metallicity bins
+    - (ndarray): median SFR bins
+    '''
     STARS_OR_GAS = STARS_OR_GAS.upper()
     
     snapshots, snap2z, BLUE_DIR = switch_sim(sim)
@@ -52,7 +67,7 @@ def thin_mass_bin(sim, ax, m_star_min=8.0, m_star_max=12.0, m_gas_min=8.5,
     
     for gbl_index, snap in enumerate(snapshots):
 
-        currentDir = BLUE_DIR + 'data/' + 'snap%s/' %snap
+        currentDir = BLUE_DIR + 'snap%s/' %snap
 
         Zgas      = np.load( currentDir + 'Zgas.npy' )
         Zstar     = np.load( currentDir + 'Zstar.npy' ) 

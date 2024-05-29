@@ -1,21 +1,28 @@
+'''
+This file is used to create Figure 4 of "Does the fundamental 
+metallicity relation evolve with redshift? I: the correlation
+between offsets from the mass-metallicity relation and star 
+formation rate"
+#
+Paper: https://academic.oup.com/mnras/article/531/1/1398/7671150
+#
+Code written by: Alex Garcia, 2023-24
+'''
+### Standard Imports
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
 import cmasher as cmr
-
-import illustris_python as il
-
-import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm, ListedColormap
-import matplotlib.gridspec as gridspec
-
-from scipy.optimize import curve_fit
-from scipy.interpolate import interp1d
-from scipy.stats import ks_2samp, iqr
-
-from getAlpha import whichSim2Tex
-from dZdSFR import thin_mass_bin
+### Imports From this library
+import sys, os
+sys.path.append(os.path.dirname(os.getcwd()))
+from does_the_fmr_evolve_simulations.getAlpha import (
+    whichSim2Tex
+)
+from does_the_fmr_evolve_simulations.dZdSFR import (
+    thin_mass_bin
+)
 
 sims = ['original','tng','eagle']
 
@@ -35,8 +42,7 @@ colors = [ cmap(x) for x in newcolors[::-1] ]
 fig, axs = plt.subplots(1,3,figsize=(10,3.5),sharey=True)
 for sim_index, sim in enumerate(sims):
     ax = axs[sim_index]
-    worms_x, worms_y = thin_mass_bin(sim.upper(),plt.gca(),
-                                     thin_low=thin_low,thin_high=thin_high)
+    worms_x, worms_y = thin_mass_bin(sim.upper(),plt.gca(),thin_low=thin_low,thin_high=thin_high)
 
     for index, worm_x in enumerate(worms_x):
         worm_y = worms_y[index]

@@ -1,3 +1,8 @@
+###########
+# Not used in the final paper. Minimal documentation provided
+###########
+assert(1==0)
+
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')

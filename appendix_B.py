@@ -1,9 +1,24 @@
+'''
+This file is used to create Figure B1 of "Does the fundamental 
+metallicity relation evolve with redshift? I: the correlation
+between offsets from the mass-metallicity relation and star 
+formation rate"
+#
+Paper: https://academic.oup.com/mnras/article/531/1/1398/7671150
+#
+Code written by: Alex Garcia, 2023-24
+'''
+### Standard Imports
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
-
-from getAlpha import get_alpha
+### Imports From this library
+import sys, os
+sys.path.append(os.path.dirname(os.getcwd()))
+from does_the_fmr_evolve_simulations.getAlpha import (
+    get_alpha
+)
 
 mpl.rcParams['font.size'] = 22
 
@@ -77,4 +92,3 @@ plt.tight_layout()
 plt.subplots_adjust(hspace=0.0)
 
 plt.savefig('Figures (pdfs)/'+"FigureB1.pdf", bbox_inches='tight')
-plt.show()
