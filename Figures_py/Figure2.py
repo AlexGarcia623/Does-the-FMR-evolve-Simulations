@@ -1,11 +1,13 @@
 ## Standard Imports
+import os, sys
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
 
-FMR = __import__('Does-the-FMR-evolve-Simulations')
 ## From this library
+sys.path.append(os.path.dirname(os.getcwd()))
+FMR = __import__('Does-the-FMR-evolve-Simulations', globals(), locals(), ['getAlpha', 'helpers'], 0)
 from FMR.getAlpha import get_alpha
 from FMR.helpers import (
     ttest, estimate_symmetric_error

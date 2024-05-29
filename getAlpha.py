@@ -5,7 +5,6 @@ import h5py
 import numpy as np
 import matplotlib as mpl
 mpl.use('agg')
-import illustris_python as il
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, ListedColormap
